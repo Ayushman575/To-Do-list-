@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Glass To‑Do</title>
+
+    <!-- Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="style.css" />
+  </head>
+
+  <body>
+    <div class="bg" aria-hidden="true"></div>
+
+    <header class="app-header glass">
+      <div class="header-left">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">✦</div>
+          <div class="brand-text">
+            <h1>Glass To‑Do</h1>
+            <p class="sub">Fast, beautiful productivity.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="toolbar">
+          <div class="field">
+            <label for="search" class="sr-only">Search</label>
+            <input
+              id="search"
+              type="search"
+              placeholder="Search tasks…"
+              autocomplete="off"
+            />
+            <span id="searchHint" class="hint" aria-hidden="true"></span>
+          </div>
+
+          <div class="field inline">
+            <label for="filter" class="sr-only">Filter</label>
+            <select id="filter">
+              <option value="all">All Tasks</option>
+              <option value="completed">Completed</option>
+              <option value="pending">Pending</option>
+              <option value="high">High Priority</option>
+              <option value="medium">Medium Priority</option>
+              <option value="low">Low Priority</option>
+              <option value="category">Category</option>
+            </select>
+          </div>
+
+          <div class="field inline" id="categoryWrap" hidden>
+            <label for="category" class="sr-only">Category</label>
+            <select id="category">
+              <option value="Personal">Personal</option>
+              <option value="Work">Work</option>
+              <option value="Study">Study</option>
+              <option value="Health">Health</option>
+            </select>
+          </div>
+
+          <button id="themeToggle" class="btn ghost" type="button" aria-label="Toggle dark/light">
+            <span class="icon" aria-hidden="true">☾</span>
+            <span class="label">Mode</span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <main class="container">
+      <section class="top-metrics">
+        <div class="metric glass">
+          <div class="metric-title">Total</div>
+          <div id="countTotal" class="metric-value">0</div>
+        </div>
+        <div class="metric glass">
+          <div class="metric-title">Completed</div>
+          <div id="countCompleted" class="metric-value">0</div>
+        </div>
+        <div class="metric glass">
+          <div class="metric-title">Pending</div>
+          <div id="countPending" class="metric-value">0</div>
+        </div>
+
+        <div class="progress-wrap glass" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+          <div class="progress-head">
+            <span>Completion</span>
+            <span id="progressLabel" class="mono">0%</span>
+          </div>
+          <div class="progress">
+            <div id="progressBar" class="progress-bar" style="width:0%"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid">
+        <aside class="panel glass">
+          <h2>Add a task</h2>
+
+          <form id="taskForm" class="form" autocomplete="off">
+            <div class="row">
+              <div class="field full">
+                <label for="title">Task</label>
+                <input id="title" name="title" type="text" placeholder="e.g., Finish project report" required />
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field">
+                <label for="taskCategory">Category</label>
+                <select id="taskCategory">
+                  <option value="Personal">Personal</option>
+                  <option value="Work">Work</option>
+                  <option value="Study">Study</option>
+                  <option value="Health">Health</option>
+                  <option value="Custom">Custom…</option>
+                </select>
+              </div>
+
+              <div class="field" id="customCategoryWrap" hidden>
+                <label for="customCategory">Custom category</label>
+                <input id="customCategory" type="text" placeholder="e.g., Fitness" />
+              </div>
+
+              <div class="field">
+                <label for="priority">Priority</label>
+                <select id="priority">
+                  <option value="high">High Priority</option>
+                  <option value="medium" selected>Medium Priority</option>
+                  <option value="low">Low Priority</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="field full">
+                <label for="dueDate">Due date</label>
+                <input id="dueDate" type="date" />
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button class="btn" type="submit">
+                <span class="icon" aria-hidden="true">＋</span>
+                <span>Add</span>
+              </button>
+              <button id="clearCompletedBtn" class="btn danger" type="button" disabled>
+                Clear completed
+              </button>
+            </div>
+
+            <p class="micro">
+              Tip: Press <span class="kbd">Enter</span> to add (when not typing in another field).
+            </p>
+          </form>
+
+          <div class="divider"></div>
+
+          <div class="export-import">
+            <h3>Data</h3>
+            <div class="row" style="gap:10px;">
+              <button id="exportBtn" class="btn ghost" type="button">Export JSON</button>
+              <button id="importBtn" class="btn ghost" type="button">Import JSON</button>
+              <input id="importInput" type="file" accept="application/json" hidden />
+            </div>
+            <p class="micro">Import is optional. Use it to restore a previous backup.</p>
+          </div>
+        </aside>
+
+        <section class="main panel glass">
+          <div class="main-head">
+            <div>
+              <h2>Tasks</h2>
+              <p class="sub" id="taskSub">Add your first task to get started.</p>
+            </div>
+
+            <div id="undoBar" class="undo-bar" hidden>
+              <span class="undo-text">Task removed.</span>
+              <button id="undoBtn" class="btn small ghost" type="button">Undo</button>
+            </div>
+          </div>
+
+          <div id="emptyState" class="empty-state" hidden>
+            <div class="empty-ill" aria-hidden="true">
+              <svg width="180" height="120" viewBox="0 0 180 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M30 30C30 20.0589 38.0589 12 48 12H132C141.941 12 150 20.0589 150 30V90C150 99.9411 141.941 108 132 108H48C38.0589 108 30 99.9411 30 90V30Z"
+                  stroke="currentColor"
+                  stroke-width="2.5"
+                  opacity="0.25"
+                />
+                <path d="M54 55H126" stroke="currentColor" stroke-width="6" stroke-linecap="round" opacity="0.35" />
+                <path d="M54 75H108" stroke="currentColor" stroke-width="6" stroke-linecap="round" opacity="0.35" />
+                <circle cx="48" cy="25" r="6" fill="currentColor" opacity="0.25" />
+                <circle cx="66" cy="25" r="6" fill="currentColor" opacity="0.18" />
+              </svg>
+            </div>
+            <h3>No tasks yet</h3>
+            <p>Add your first task to get started. Your progress bar will update automatically.</p>
+          </div>
+
+          <div id="tasks" class="tasks" aria-live="polite"></div>
+        </section>
+      </section>
+
+      <section class="bottom-grid">
+        <div class="panel glass quote">
+          <h3>Motivational quote</h3>
+          <blockquote id="quote" class="quote-text">Loading…</blockquote>
+          <div class="quote-by" id="quoteBy"></div>
+        </div>
+
+        <div class="panel glass summary">
+          <h3>Daily productivity</h3>
+          <div class="summary-row">
+            <div class="sum-item">
+              <div class="sum-label">Completed today</div>
+              <div class="sum-value" id="todayCompleted">0</div>
+            </div>
+            <div class="sum-item">
+              <div class="sum-label">Streak</div>
+              <div class="sum-value" id="streak">0</div>
+            </div>
+          </div>
+          <p class="micro" id="summaryHint">Keep going.</p>
+        </div>
+      </section>
+    </main>
+
+    <div class="toast-container" aria-live="polite" aria-relevant="additions" id="toastContainer"></div>
+
+    <!-- Import modal -->
+    <div id="importModal" class="modal" hidden>
+      <div class="modal-card glass" role="dialog" aria-modal="true" aria-labelledby="importTitle">
+        <div class="modal-head">
+          <h2 id="importTitle">Import tasks</h2>
+          <button id="importClose" class="icon-btn" type="button" aria-label="Close">✕</button>
+        </div>
+        <p class="micro">Choose a JSON file created by this app.</p>
+        <div class="modal-actions">
+          <button id="pickImport" class="btn" type="button">Pick JSON file</button>
+        </div>
+        <input id="importHidden" type="file" accept="application/json" hidden />
+        <div id="importStatus" class="import-status micro"></div>
+      </div>
+    </div>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>
+
